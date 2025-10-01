@@ -1,6 +1,11 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+const DESIGN_WIDTH = 900;
+const DESIGN_HEIGHT = 600;
+let scaleX = 1;
+let scaleY = 1;
+
 const commandPointsEl = document.getElementById("commandPoints");
 const escapedEl = document.getElementById("escaped");
 const statusEl = document.getElementById("status");
@@ -217,6 +222,29 @@ const units = [];
 const towers = [];
 const projectiles = [];
 
+function resizeCanvas() {
+  const ratio = window.devicePixelRatio || 1;
+  let { clientWidth, clientHeight } = canvas;
+  if (!clientWidth) {
+    return;
+  }
+
+  if (!clientHeight) {
+    clientHeight = (clientWidth * DESIGN_HEIGHT) / DESIGN_WIDTH;
+  }
+
+  const width = Math.round(clientWidth * ratio);
+  const height = Math.round(clientHeight * ratio);
+
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
+  }
+
+  scaleX = canvas.width / DESIGN_WIDTH;
+  scaleY = canvas.height / DESIGN_HEIGHT;
+}
+
 function createTowers() {
   towers.push(new Tower(160, 380, { fireRate: 1.4, range: 200 }));
   towers.push(new Tower(340, 260, { fireRate: 1.2, damage: 35 }));
@@ -304,10 +332,9 @@ function update(dt) {
 }
 
 function drawBackground() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.save();
   ctx.fillStyle = "rgba(12, 20, 32, 0.9)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
 
   ctx.strokeStyle = "#1d4ed8";
   ctx.lineWidth = 28;
@@ -390,6 +417,9 @@ function gameLoop(time) {
   lastTime = time;
 
   update(dt);
+  resizeCanvas();
+  ctx.setTransform(scaleX, 0, 0, scaleY, 0, 0);
+  ctx.clearRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
   drawBackground();
   drawTowers();
   drawUnits();
@@ -405,22 +435,22 @@ function gameLoop(time) {
 function drawOverlay() {
   ctx.save();
   ctx.fillStyle = "rgba(15, 23, 42, 0.65)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
   ctx.fillStyle = "#f8fafc";
   ctx.font = "bold 36px 'Segoe UI', sans-serif";
   ctx.textAlign = "center";
   ctx.fillText(
     escapedCount >= TARGET_ESCAPED ? "Victory!" : "Defeat",
-    canvas.width / 2,
-    canvas.height / 2 - 10
+    DESIGN_WIDTH / 2,
+    DESIGN_HEIGHT / 2 - 10
   );
   ctx.font = "20px 'Segoe UI', sans-serif";
   ctx.fillText(
     escapedCount >= TARGET_ESCAPED
       ? "Your raiders breached the portal."
       : "The defense grid held strong this time.",
-    canvas.width / 2,
-    canvas.height / 2 + 24
+    DESIGN_WIDTH / 2,
+    DESIGN_HEIGHT / 2 + 24
   );
   ctx.restore();
 }
@@ -441,4 +471,6 @@ document.addEventListener("keydown", (event) => {
 
 createTowers();
 commandPointsEl.textContent = commandPoints.toString();
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 requestAnimationFrame(gameLoop);
