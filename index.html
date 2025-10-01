@@ -3,11 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0c2415" />
     <title>Vine-Trellis Lynx Cooperative</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="hud">
+      <span class="hud-badge" aria-hidden="true">Reverse TD</span>
       <h1>Vine-Trellis Lynx Cooperative</h1>
       <p>
         Guide the cooperative's scouts, wardens, and guardians through the
@@ -23,6 +31,11 @@
           <label for="difficulty">Path Intensity</label>
           <select id="difficulty" aria-label="Select path intensity"></select>
         </div>
+        <p
+          id="difficultyDescription"
+          class="difficulty-description"
+          aria-live="polite"
+        ></p>
         <p class="resources">
           <strong>Harvest Points:</strong>
           <span id="commandPoints" aria-live="polite">0</span>
