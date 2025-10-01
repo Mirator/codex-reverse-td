@@ -3,34 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Reverse Tower Defense</title>
+    <title>Vine-Trellis Lynx Cooperative</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="hud">
-      <h1>Reverse Tower Defense</h1>
+      <h1>Vine-Trellis Lynx Cooperative</h1>
       <p>
-        Deploy raiding parties that can break through the automated defenses. If
-        twenty units reach the escape portal, you win!
+        Guide the cooperative's scouts, wardens, and guardians through the
+        treetop trellis so every lynx family reaches the sanctuary clearing.
+        Sheltering twenty families secures the grove.
       </p>
     </header>
 
     <main class="layout">
       <section class="panel">
-        <h2>Command Console</h2>
+        <h2>Canopy Dispatch</h2>
         <div class="difficulty-control">
-          <label for="difficulty">Difficulty</label>
-          <select id="difficulty" aria-label="Select difficulty"></select>
+          <label for="difficulty">Path Intensity</label>
+          <select id="difficulty" aria-label="Select path intensity"></select>
         </div>
         <p class="resources">
-          <strong>Command Points:</strong>
+          <strong>Harvest Points:</strong>
           <span id="commandPoints" aria-live="polite">0</span>
         </p>
-        <div class="buttons" aria-label="Unit deployment options"></div>
-        <p class="tip">Command points regenerate automatically.</p>
+        <div class="buttons" aria-label="Forage caravan options"></div>
+        <p class="tip">Harvest points bloom back over time.</p>
         <div class="objectives">
           <p>
-            <strong>Raiders escaped:</strong>
+            <strong>Lynx families sheltered:</strong>
             <span id="escaped" aria-live="polite">0</span>
             /
             <span id="targetTotal">20</span>
@@ -44,18 +45,18 @@
           width="900"
           height="600"
           role="img"
-          aria-label="Game board showing the enemy base, path, and defensive towers"
+          aria-label="Garden trellis with winding paths, cooperative units, and defensive towers"
         ></canvas>
         <button id="restartButton" class="overlay-button" type="button" hidden>
-          Play Again
+          Send Another Caravan
         </button>
       </section>
     </main>
 
     <footer class="hud">
       <p>
-        Tip: Scouts are quick distractions. Bruisers soak shots. Tanks are slow
-        but almost unstoppable.
+        Tip: Seed Runners draw tower focus. Lynx Wardens hold the line. Grove
+        Sentinels are slow but nearly unshakeable.
       </p>
     </footer>
 

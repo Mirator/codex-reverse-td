@@ -1,8 +1,8 @@
 :root {
   color-scheme: dark light;
   font-family: "Segoe UI", Tahoma, sans-serif;
-  background-color: #10131a;
-  color: #f1f5f9;
+  background-color: #06160c;
+  color: #f4faf5;
 }
 
 body {
@@ -10,6 +10,9 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: radial-gradient(circle at top left, #1b3d28, transparent 55%),
+    radial-gradient(circle at 80% 10%, rgba(117, 189, 139, 0.35), transparent 60%),
+    linear-gradient(160deg, #081309 0%, #0f2215 55%, #13311c 100%);
 }
 
 h1,
@@ -35,18 +38,20 @@ main.layout {
 
 .hud,
 .panel {
-  background: rgba(15, 23, 42, 0.9);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 48, 29, 0.85);
+  border-bottom: 1px solid rgba(187, 230, 204, 0.25);
   padding: 1rem;
-  box-shadow: 0 0 15px rgba(15, 23, 42, 0.5);
+  box-shadow: 0 0 20px rgba(9, 25, 16, 0.55);
+  color: #f0f9f1;
 }
 
 .panel {
-  border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 14px;
+  border: 1px solid rgba(164, 214, 185, 0.35);
   position: sticky;
   top: 1rem;
   align-self: start;
+  backdrop-filter: blur(6px);
 }
 
 .hud {
@@ -55,7 +60,7 @@ main.layout {
 
 .resources strong {
   display: inline-block;
-  min-width: 150px;
+  min-width: 170px;
 }
 
 .difficulty-control {
@@ -69,19 +74,21 @@ main.layout {
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 0.02em;
+  color: #d5f2d8;
 }
 
 .difficulty-control select {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  border-radius: 8px;
+  background: rgba(12, 37, 23, 0.75);
+  border: 1px solid rgba(172, 222, 188, 0.45);
+  border-radius: 10px;
   padding: 0.5rem 0.75rem;
   color: inherit;
   font-size: 0.95rem;
+  box-shadow: inset 0 0 0 1px rgba(42, 112, 70, 0.35);
 }
 
 .difficulty-control select:focus-visible {
-  outline: 2px solid rgba(14, 165, 233, 0.65);
+  outline: 2px solid rgba(148, 255, 199, 0.7);
   outline-offset: 2px;
 }
 
@@ -97,10 +104,10 @@ main.layout {
 }
 
 button {
-  background: linear-gradient(135deg, #0ea5e9, #6366f1);
-  color: white;
+  background: linear-gradient(140deg, #2f9a62, #7acb82);
+  color: #0b1d10;
   border: none;
-  border-radius: 10px;
+  border-radius: 14px;
   padding: 0.75rem 1rem;
   font-size: 1rem;
   font-weight: 600;
@@ -109,12 +116,13 @@ button {
   align-items: flex-start;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 6px 15px rgba(28, 80, 49, 0.35);
 }
 
 button:hover,
 button:focus-visible {
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(14, 165, 233, 0.25);
+  box-shadow: 0 12px 26px rgba(51, 132, 84, 0.45);
 }
 
 button[hidden] {
@@ -123,7 +131,8 @@ button[hidden] {
 
 button small {
   font-weight: 400;
-  opacity: 0.8;
+  opacity: 0.85;
+  color: rgba(8, 29, 16, 0.9);
 }
 
 .buttons .unit-name {
@@ -139,7 +148,7 @@ button small {
   flex-wrap: wrap;
   gap: 0.5rem;
   font-size: 0.78rem;
-  color: rgba(241, 245, 249, 0.82);
+  color: rgba(11, 29, 17, 0.85);
 }
 
 .buttons .unit-stats .stat {
@@ -154,24 +163,27 @@ button small {
 
 .buttons .unit-role {
   font-size: 0.78rem;
-  color: rgba(148, 163, 184, 0.95);
+  color: rgba(8, 34, 18, 0.8);
   letter-spacing: 0.01em;
 }
 
 .playfield {
   position: relative;
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  border: 1px solid rgba(149, 214, 174, 0.4);
   aspect-ratio: 3 / 2;
   display: flex;
+  box-shadow: 0 20px 35px rgba(5, 16, 9, 0.55);
 }
 
 canvas {
   display: block;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 20% 20%, #1e293b, #0f172a 65%);
+  background: radial-gradient(circle at 30% 20%, #274c32, transparent 65%),
+    radial-gradient(circle at 70% 75%, rgba(120, 201, 146, 0.45), transparent 70%),
+    linear-gradient(180deg, #12321e 0%, #0b2415 100%);
 }
 
 .overlay-button {
@@ -179,40 +191,54 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 1rem 2rem;
+  padding: 1rem 2.4rem;
   font-size: 1.1rem;
   text-align: center;
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.9), rgba(99, 102, 241, 0.95));
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.45);
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  border-radius: 12px;
-  backdrop-filter: blur(4px);
+  background: linear-gradient(135deg, rgba(238, 196, 109, 0.95), rgba(163, 215, 133, 0.95));
+  box-shadow: 0 15px 34px rgba(18, 46, 26, 0.55);
+  border: 1px solid rgba(228, 255, 201, 0.6);
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   letter-spacing: 0.02em;
+  color: #1a2c13;
 }
 
 .overlay-button:hover,
 .overlay-button:focus-visible {
-  transform: translate(-50%, -50%) scale(1.02);
-  box-shadow: 0 18px 36px rgba(14, 165, 233, 0.3);
+  transform: translate(-50%, -50%) scale(1.03);
+  box-shadow: 0 20px 38px rgba(31, 89, 55, 0.55);
 }
 
 .tip {
   font-size: 0.9rem;
-  opacity: 0.85;
+  color: rgba(226, 246, 226, 0.85);
 }
 
 .objectives {
   margin-top: 1rem;
-  background: rgba(15, 23, 42, 0.65);
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
+  background: rgba(11, 43, 24, 0.6);
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(154, 214, 174, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(44, 107, 66, 0.25);
 }
 
 footer {
   font-size: 0.95rem;
+}
+
+#status {
+  min-height: 1.2rem;
+  opacity: 0.65;
+  transition: opacity 0.3s ease;
+}
+
+#status.visible {
+  opacity: 1;
+  color: #d9f99d;
 }
 
 @media (max-width: 900px) {
@@ -225,16 +251,6 @@ footer {
     position: relative;
     top: auto;
   }
-}
-#status {
-  min-height: 1.2rem;
-  opacity: 0.65;
-  transition: opacity 0.3s ease;
-}
-
-#status.visible {
-  opacity: 1;
-  color: #38bdf8;
 }
 
 @media (max-width: 640px) {
