@@ -4,7 +4,7 @@
   "description": "Reverse Tower Defense browser game",
   "private": true,
   "scripts": {
-    "test": "jest"
+    "test": "node scripts/run-jest.js"
   },
   "devDependencies": {
     "jest": "29.7.0",
