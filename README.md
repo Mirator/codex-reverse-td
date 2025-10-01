@@ -8,6 +8,7 @@ A lightweight browser game where you command raiders in a reverse tower defense 
 2. Open `index.html` in your browser.
 3. Spend command points on Scouts, Bruisers, or Tanks and try to push at least 20 units through the exit portal before the automated turrets stop them.
 
+
 ## Deploying to GitHub Pages
 
 Because the project is a static site, you can deploy it straight from your repository without a build step:
