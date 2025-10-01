@@ -65,6 +65,10 @@ main.layout {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
+.buttons button {
+  gap: 0.4rem;
+}
+
 button {
   background: linear-gradient(135deg, #0ea5e9, #6366f1);
   color: white;
@@ -93,6 +97,38 @@ button[hidden] {
 button small {
   font-weight: 400;
   opacity: 0.8;
+}
+
+.buttons .unit-name {
+  font-size: 1.05rem;
+}
+
+.buttons .unit-cost {
+  font-size: 0.82rem;
+}
+
+.buttons .unit-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: rgba(241, 245, 249, 0.82);
+}
+
+.buttons .unit-stats .stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.buttons .unit-stats strong {
+  font-size: 0.82rem;
+}
+
+.buttons .unit-role {
+  font-size: 0.78rem;
+  color: rgba(148, 163, 184, 0.95);
+  letter-spacing: 0.01em;
 }
 
 .playfield {
@@ -197,6 +233,15 @@ footer {
   button {
     font-size: 0.95rem;
     padding: 0.65rem 0.85rem;
+  }
+
+  .buttons .unit-name {
+    font-size: 1rem;
+  }
+
+  .buttons .unit-stats,
+  .buttons .unit-role {
+    font-size: 0.75rem;
   }
 
   .playfield {

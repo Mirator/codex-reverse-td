@@ -20,10 +20,7 @@ const restartButton =
     ? document.getElementById("restartButton")
     : null;
 
-const unitButtons =
-  typeof document !== "undefined"
-    ? Array.from(document.querySelectorAll("button[data-unit]"))
-    : [];
+let unitButtons = [];
 
 const TARGET_ESCAPED = 20;
 const BASE_POINTS = 60;
@@ -54,6 +51,7 @@ const unitTypes = {
     radius: 10,
     color: "#22d3ee",
     cost: 30,
+    role: "Swift distraction that draws tower fire.",
   },
   bruiser: {
     name: "Bruiser",
@@ -62,6 +60,7 @@ const unitTypes = {
     radius: 12,
     color: "#f97316",
     cost: 55,
+    role: "Front-line brawler built to soak damage.",
   },
   tank: {
     name: "Tank",
@@ -70,8 +69,75 @@ const unitTypes = {
     radius: 14,
     color: "#a855f7",
     cost: 90,
+    role: "Siege engine that shrugs off focused fire.",
   },
 };
+
+function buildUnitButtons(container) {
+  const buttons = [];
+  container.innerHTML = "";
+  const fragment = document.createDocumentFragment();
+
+  Object.entries(unitTypes).forEach(([key, unit]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.unit = key;
+    const ariaLabel = `Deploy ${unit.name} (Cost ${unit.cost}, Speed ${unit.speed}, Health ${unit.health}, Role ${unit.role})`;
+    button.setAttribute("aria-label", ariaLabel);
+    button.title = `${unit.name}\nCost: ${unit.cost}\nSpeed: ${unit.speed}\nHealth: ${unit.health}\nRole: ${unit.role}`;
+
+    const name = document.createElement("span");
+    name.className = "unit-name";
+    name.textContent = `Deploy ${unit.name}`;
+    button.appendChild(name);
+
+    const cost = document.createElement("small");
+    cost.className = "unit-cost";
+    cost.textContent = `Cost: ${unit.cost}`;
+    button.appendChild(cost);
+
+    const stats = document.createElement("span");
+    stats.className = "unit-stats";
+
+    const speedStat = document.createElement("span");
+    speedStat.className = "stat";
+    speedStat.append("Speed ");
+    const speedValue = document.createElement("strong");
+    speedValue.textContent = unit.speed.toString();
+    speedStat.appendChild(speedValue);
+    stats.appendChild(speedStat);
+
+    const healthStat = document.createElement("span");
+    healthStat.className = "stat";
+    healthStat.append("Health ");
+    const healthValue = document.createElement("strong");
+    healthValue.textContent = unit.health.toString();
+    healthStat.appendChild(healthValue);
+    stats.appendChild(healthStat);
+
+    button.appendChild(stats);
+
+    const role = document.createElement("span");
+    role.className = "unit-role";
+    role.textContent = `Role: ${unit.role}`;
+    button.appendChild(role);
+
+    fragment.appendChild(button);
+    buttons.push(button);
+  });
+
+  container.appendChild(fragment);
+  return buttons;
+}
+
+if (typeof document !== "undefined") {
+  const buttonContainer = document.querySelector(".buttons");
+  if (buttonContainer) {
+    unitButtons = buildUnitButtons(buttonContainer);
+  } else {
+    unitButtons = Array.from(document.querySelectorAll("button[data-unit]"));
+  }
+}
 
 class Unit {
   constructor(type) {
