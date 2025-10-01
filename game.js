@@ -32,8 +32,8 @@ let unitButtons = [];
 
 const difficultySettings = {
   recruit: {
-    label: "Recruit",
-    description: "Forgiving pace for learning the ropes.",
+    label: "Sprout Path",
+    description: "Gentle pacing for new tenders of the trellis.",
     commandPoints: { start: 80, regen: 15 },
     targetEscaped: 15,
     towers: [
@@ -45,8 +45,8 @@ const difficultySettings = {
     ],
   },
   standard: {
-    label: "Standard",
-    description: "Balanced challenge with original tuning.",
+    label: "Trellis Watch",
+    description: "Balanced flow for seasoned caretakers.",
     commandPoints: { start: 60, regen: 12 },
     targetEscaped: 20,
     towers: [
@@ -58,8 +58,8 @@ const difficultySettings = {
     ],
   },
   veteran: {
-    label: "Veteran",
-    description: "For commanders seeking a brutal siege.",
+    label: "Verdant Crown",
+    description: "Demanding routes for mastery of the grove.",
     commandPoints: { start: 50, regen: 10 },
     targetEscaped: 25,
     towers: [
@@ -112,31 +112,31 @@ const path = [
 
 const unitTypes = {
   scout: {
-    name: "Scout",
+    name: "Seed Runner",
     speed: 120,
     health: 35,
     radius: 10,
-    color: "#22d3ee",
+    color: "#facc15",
     cost: 30,
-    role: "Swift distraction that draws tower fire.",
+    role: "Swift courier that lures tower attention away.",
   },
   bruiser: {
-    name: "Bruiser",
+    name: "Lynx Warden",
     speed: 80,
     health: 90,
     radius: 12,
-    color: "#f97316",
+    color: "#34d399",
     cost: 55,
-    role: "Front-line brawler built to soak damage.",
+    role: "Protective warden shielding the caravan.",
   },
   tank: {
-    name: "Tank",
+    name: "Grove Sentinel",
     speed: 55,
     health: 180,
     radius: 14,
-    color: "#a855f7",
+    color: "#7c3aed",
     cost: 90,
-    role: "Siege engine that shrugs off focused fire.",
+    role: "Living bulwark that shrugs off concentrated fire.",
   },
 };
 
@@ -355,15 +355,15 @@ class Tower {
   draw() {
     const { x, y } = this.position;
     ctx.save();
-    ctx.fillStyle = "#0f172a";
-    ctx.strokeStyle = "#94a3b8";
+    ctx.fillStyle = "#143723";
+    ctx.strokeStyle = "#9ae6b4";
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.arc(x, y, 20, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
 
-    ctx.strokeStyle = "rgba(148, 163, 184, 0.25)";
+    ctx.strokeStyle = "rgba(186, 230, 199, 0.25)";
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.arc(x, y, this.range, 0, Math.PI * 2);
@@ -407,7 +407,7 @@ class Projectile {
   draw() {
     if (!this.active) return;
     ctx.save();
-    ctx.fillStyle = "#facc15";
+    ctx.fillStyle = "#f4d657";
     ctx.beginPath();
     ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
     ctx.fill();
@@ -455,12 +455,12 @@ function spawnUnit(key) {
   const type = unitTypes[key];
   if (!type) return;
   if (commandPoints < type.cost) {
-    flashStatus(`Not enough command points for a ${type.name}.`);
+    flashStatus(`Not enough harvest points to send a ${type.name}.`);
     return;
   }
   commandPoints -= type.cost;
   units.push(new Unit(type));
-  flashStatus(`${type.name} deployed!`);
+  flashStatus(`${type.name} underway!`);
 }
 
 function flashStatus(message) {
@@ -475,8 +475,8 @@ function endGame(victory) {
   gameOver = true;
   if (statusEl) {
     statusEl.textContent = victory
-      ? "Raid successful! You overwhelmed the defenses."
-      : "The towers held. Recalibrate your assault.";
+      ? "Sanctuary secured! The trellis flourishes."
+      : "The warding towers held. Regrow your strategy.";
     statusEl.classList.add("visible");
   }
 }
@@ -528,7 +528,7 @@ function update(dt) {
   ) {
     // no units on the map and not enough points for the cheapest unit
     // gently nudge the player to keep trying
-    flashStatus("Regroup! Save up for more units.");
+    flashStatus("Regather the vines! Wait for more harvest points.");
     lastMotivation = timeElapsed;
   }
 }
@@ -536,10 +536,10 @@ function update(dt) {
 function drawBackground() {
   if (!ctx) return;
   ctx.save();
-  ctx.fillStyle = "rgba(12, 20, 32, 0.9)";
+  ctx.fillStyle = "rgba(9, 33, 19, 0.92)";
   ctx.fillRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
 
-  ctx.strokeStyle = "#1d4ed8";
+  ctx.strokeStyle = "#2f7a44";
   ctx.lineWidth = 28;
   ctx.lineCap = "round";
   ctx.beginPath();
@@ -549,7 +549,7 @@ function drawBackground() {
   }
   ctx.stroke();
 
-  ctx.strokeStyle = "#0ea5e9";
+  ctx.strokeStyle = "#8ed1a0";
   ctx.lineWidth = 18;
   ctx.beginPath();
   ctx.moveTo(path[0].x, path[0].y);
@@ -558,13 +558,13 @@ function drawBackground() {
   }
   ctx.stroke();
 
-  ctx.fillStyle = "#ef4444";
+  ctx.fillStyle = "#f4a261";
   const base = path[path.length - 1];
   ctx.beginPath();
   ctx.arc(base.x, base.y, 26, 0, Math.PI * 2);
   ctx.fill();
 
-  ctx.fillStyle = "#22c55e";
+  ctx.fillStyle = "#bbf7d0";
   const start = path[0];
   ctx.beginPath();
   ctx.arc(start.x, start.y, 22, 0, Math.PI * 2);
@@ -583,7 +583,7 @@ function drawUnits() {
     ctx.fill();
 
     // health bar
-    ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
+    ctx.fillStyle = "rgba(4, 28, 15, 0.85)";
     ctx.fillRect(
       unit.position.x - unit.radius,
       unit.position.y - unit.radius - 8,
@@ -591,7 +591,7 @@ function drawUnits() {
       4
     );
     const healthWidth = (unit.health / unit.maxHealth) * unit.radius * 2;
-    ctx.fillStyle = "#4ade80";
+    ctx.fillStyle = "#bef264";
     ctx.fillRect(
       unit.position.x - unit.radius,
       unit.position.y - unit.radius - 8,
@@ -644,21 +644,21 @@ function gameLoop(time) {
 function drawOverlay() {
   if (!ctx) return;
   ctx.save();
-  ctx.fillStyle = "rgba(15, 23, 42, 0.65)";
+  ctx.fillStyle = "rgba(9, 31, 19, 0.68)";
   ctx.fillRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
-  ctx.fillStyle = "#f8fafc";
+  ctx.fillStyle = "#f2fce5";
   ctx.font = "bold 36px 'Segoe UI', sans-serif";
   ctx.textAlign = "center";
   ctx.fillText(
-    escapedCount >= targetEscapedGoal ? "Victory!" : "Defeat",
+    escapedCount >= targetEscapedGoal ? "Sanctuary Saved!" : "Trellis Overrun",
     DESIGN_WIDTH / 2,
     DESIGN_HEIGHT / 2 - 10
   );
   ctx.font = "20px 'Segoe UI', sans-serif";
   ctx.fillText(
     escapedCount >= targetEscapedGoal
-      ? "Your raiders breached the portal."
-      : "The defense grid held strong this time.",
+      ? "Every family reached the glowing grove."
+      : "The tower thorns scattered the caravan.",
     DESIGN_WIDTH / 2,
     DESIGN_HEIGHT / 2 + 24
   );
