@@ -18,6 +18,10 @@
     <main class="layout">
       <section class="panel">
         <h2>Command Console</h2>
+        <div class="difficulty-control">
+          <label for="difficulty">Difficulty</label>
+          <select id="difficulty" aria-label="Select difficulty"></select>
+        </div>
         <p class="resources">
           <strong>Command Points:</strong>
           <span id="commandPoints" aria-live="polite">0</span>
@@ -27,7 +31,9 @@
         <div class="objectives">
           <p>
             <strong>Raiders escaped:</strong>
-            <span id="escaped" aria-live="polite">0</span> / 20
+            <span id="escaped" aria-live="polite">0</span>
+            /
+            <span id="targetTotal">20</span>
           </p>
           <p id="status" role="status" aria-live="polite"></p>
         </div>
