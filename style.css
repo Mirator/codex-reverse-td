@@ -24,11 +24,13 @@ p {
 
 main.layout {
   display: grid;
-  grid-template-columns: minmax(260px, 320px) 1fr;
-  gap: 1rem;
-  padding: 1rem;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 1.25rem;
+  padding: 1.5rem;
   flex: 1;
   box-sizing: border-box;
+  width: min(1100px, 100%);
+  margin: 0 auto;
 }
 
 .hud,
@@ -60,6 +62,7 @@ main.layout {
   display: grid;
   gap: 0.75rem;
   margin: 1rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
 button {
@@ -93,12 +96,14 @@ button small {
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(148, 163, 184, 0.2);
+  aspect-ratio: 3 / 2;
+  display: flex;
 }
 
 canvas {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
   background: radial-gradient(circle at 20% 20%, #1e293b, #0f172a 65%);
 }
 
@@ -121,6 +126,7 @@ footer {
 @media (max-width: 900px) {
   main.layout {
     grid-template-columns: 1fr;
+    padding: 1.25rem;
   }
 
   .panel {
@@ -128,7 +134,6 @@ footer {
     top: auto;
   }
 }
-
 #status {
   min-height: 1.2rem;
   opacity: 0.65;
@@ -138,4 +143,34 @@ footer {
 #status.visible {
   opacity: 1;
   color: #38bdf8;
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 0.95rem;
+  }
+
+  header.hud,
+  footer.hud {
+    padding: 1rem;
+    text-align: left;
+  }
+
+  main.layout {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .buttons {
+    grid-template-columns: 1fr;
+  }
+
+  button {
+    font-size: 0.95rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .playfield {
+    border-radius: 12px;
+  }
 }
