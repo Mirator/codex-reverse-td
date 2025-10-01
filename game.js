@@ -9,6 +9,7 @@ let scaleY = 1;
 const commandPointsEl = document.getElementById("commandPoints");
 const escapedEl = document.getElementById("escaped");
 const statusEl = document.getElementById("status");
+const restartButton = document.getElementById("restartButton");
 
 const unitButtons = Array.from(document.querySelectorAll("button[data-unit]"));
 
@@ -221,6 +222,7 @@ class Projectile {
 const units = [];
 const towers = [];
 const projectiles = [];
+let animationFrameId = null;
 
 function resizeCanvas() {
   const ratio = window.devicePixelRatio || 1;
@@ -246,6 +248,7 @@ function resizeCanvas() {
 }
 
 function createTowers() {
+  towers.length = 0;
   towers.push(new Tower(160, 380, { fireRate: 1.4, range: 200 }));
   towers.push(new Tower(340, 260, { fireRate: 1.2, damage: 35 }));
   towers.push(new Tower(520, 420, { fireRate: 1.5, projectileSpeed: 360 }));
@@ -426,8 +429,9 @@ function gameLoop(time) {
   drawProjectiles();
 
   if (!gameOver) {
-    requestAnimationFrame(gameLoop);
+    animationFrameId = requestAnimationFrame(gameLoop);
   } else {
+    animationFrameId = null;
     drawOverlay();
   }
 }
@@ -453,6 +457,34 @@ function drawOverlay() {
     DESIGN_HEIGHT / 2 + 24
   );
   ctx.restore();
+  restartButton.hidden = false;
+}
+
+function resetGame() {
+  if (animationFrameId !== null) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+
+  units.length = 0;
+  projectiles.length = 0;
+  towers.length = 0;
+
+  commandPoints = BASE_POINTS;
+  escapedCount = 0;
+  gameOver = false;
+  timeElapsed = 0;
+  lastMotivation = -Infinity;
+  lastTime = performance.now();
+
+  statusEl.textContent = "";
+  statusEl.classList.remove("visible");
+  commandPointsEl.textContent = commandPoints.toString();
+  escapedEl.textContent = escapedCount.toString();
+  restartButton.hidden = true;
+
+  createTowers();
+  animationFrameId = requestAnimationFrame(gameLoop);
 }
 
 unitButtons.forEach((button) => {
@@ -467,10 +499,16 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "1") spawnUnit("scout");
   if (event.key === "2") spawnUnit("bruiser");
   if (event.key === "3") spawnUnit("tank");
+  if (event.key.toLowerCase() === "r" && gameOver) {
+    resetGame();
+  }
 });
+
+restartButton.addEventListener("click", resetGame);
 
 createTowers();
 commandPointsEl.textContent = commandPoints.toString();
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
-requestAnimationFrame(gameLoop);
+restartButton.hidden = true;
+animationFrameId = requestAnimationFrame(gameLoop);
