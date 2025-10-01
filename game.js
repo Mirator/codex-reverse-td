@@ -13,19 +13,86 @@ const commandPointsEl =
     : null;
 const escapedEl =
   typeof document !== "undefined" ? document.getElementById("escaped") : null;
+const targetTotalEl =
+  typeof document !== "undefined"
+    ? document.getElementById("targetTotal")
+    : null;
 const statusEl =
   typeof document !== "undefined" ? document.getElementById("status") : null;
 const restartButton =
   typeof document !== "undefined"
     ? document.getElementById("restartButton")
     : null;
+const difficultySelect =
+  typeof document !== "undefined"
+    ? document.getElementById("difficulty")
+    : null;
 
 let unitButtons = [];
 
-const TARGET_ESCAPED = 20;
-const BASE_POINTS = 60;
-const POINTS_PER_SECOND = 12;
-let commandPoints = BASE_POINTS;
+const difficultySettings = {
+  recruit: {
+    label: "Recruit",
+    description: "Forgiving pace for learning the ropes.",
+    commandPoints: { start: 80, regen: 15 },
+    targetEscaped: 15,
+    towers: [
+      { x: 160, y: 380, options: { fireRate: 1.2, range: 190 } },
+      { x: 340, y: 260, options: { fireRate: 1.05, damage: 30 } },
+      { x: 520, y: 420, options: { fireRate: 1.3, projectileSpeed: 340 } },
+      { x: 640, y: 200, options: { fireRate: 0.8, damage: 44, range: 210 } },
+      { x: 820, y: 300, options: { fireRate: 1.0, range: 200 } },
+    ],
+  },
+  standard: {
+    label: "Standard",
+    description: "Balanced challenge with original tuning.",
+    commandPoints: { start: 60, regen: 12 },
+    targetEscaped: 20,
+    towers: [
+      { x: 160, y: 380, options: { fireRate: 1.4, range: 200 } },
+      { x: 340, y: 260, options: { fireRate: 1.2, damage: 35 } },
+      { x: 520, y: 420, options: { fireRate: 1.5, projectileSpeed: 360 } },
+      { x: 640, y: 200, options: { fireRate: 0.9, damage: 48, range: 220 } },
+      { x: 820, y: 300, options: { fireRate: 1.1, range: 210 } },
+    ],
+  },
+  veteran: {
+    label: "Veteran",
+    description: "For commanders seeking a brutal siege.",
+    commandPoints: { start: 50, regen: 10 },
+    targetEscaped: 25,
+    towers: [
+      { x: 160, y: 380, options: { fireRate: 1.6, range: 210, damage: 32 } },
+      { x: 340, y: 260, options: { fireRate: 1.35, damage: 40 } },
+      {
+        x: 520,
+        y: 420,
+        options: { fireRate: 1.65, projectileSpeed: 380, damage: 32 },
+      },
+      { x: 640, y: 200, options: { fireRate: 1.05, damage: 52, range: 230 } },
+      { x: 820, y: 300, options: { fireRate: 1.25, range: 220, damage: 34 } },
+    ],
+  },
+};
+
+const DEFAULT_DIFFICULTY = "standard";
+let currentDifficultyKey = DEFAULT_DIFFICULTY;
+
+if (typeof localStorage !== "undefined") {
+  const savedDifficulty = localStorage.getItem("reverse-td:difficulty");
+  if (savedDifficulty && difficultySettings[savedDifficulty]) {
+    currentDifficultyKey = savedDifficulty;
+  }
+}
+
+let currentDifficulty = difficultySettings[currentDifficultyKey];
+let targetEscapedGoal = currentDifficulty.targetEscaped;
+let commandPointRegen = currentDifficulty.commandPoints.regen;
+
+const COMMAND_POINT_CAP = 200;
+
+let commandPoints = currentDifficulty.commandPoints.start;
 let escapedCount = 0;
 let gameOver = false;
 let timeElapsed = 0;
@@ -72,6 +139,37 @@ const unitTypes = {
     role: "Siege engine that shrugs off focused fire.",
   },
 };
+
+function refreshDifficultyUi() {
+  if (targetTotalEl) {
+    targetTotalEl.textContent = targetEscapedGoal.toString();
+  }
+  if (difficultySelect && difficultySelect.value !== currentDifficultyKey) {
+    difficultySelect.value = currentDifficultyKey;
+  }
+}
+
+function setDifficulty(key) {
+  if (!difficultySettings[key]) {
+    key = DEFAULT_DIFFICULTY;
+  }
+  currentDifficultyKey = key;
+  currentDifficulty = difficultySettings[currentDifficultyKey];
+  targetEscapedGoal = currentDifficulty.targetEscaped;
+  commandPointRegen = currentDifficulty.commandPoints.regen;
+  if (typeof localStorage !== "undefined") {
+    try {
+      localStorage.setItem("reverse-td:difficulty", currentDifficultyKey);
+    } catch (error) {
+      // ignore write failures (e.g., storage unavailable)
+    }
+  }
+  refreshDifficultyUi();
+}
+
+function getCurrentDifficulty() {
+  return currentDifficulty;
+}
 
 function buildUnitButtons(container) {
   const buttons = [];
@@ -139,6 +237,24 @@ if (typeof document !== "undefined") {
   }
 }
 
+if (difficultySelect) {
+  difficultySelect.innerHTML = "";
+  Object.entries(difficultySettings).forEach(([key, preset]) => {
+    const option = document.createElement("option");
+    option.value = key;
+    option.textContent = preset.label;
+    if (preset.description) {
+      option.title = preset.description;
+    }
+    difficultySelect.appendChild(option);
+  });
+  difficultySelect.addEventListener("change", (event) => {
+    setDifficulty(event.target.value);
+    resetGame();
+  });
+  refreshDifficultyUi();
+}
+
 class Unit {
   constructor(type) {
     this.type = type;
@@ -161,7 +277,7 @@ class Unit {
       if (escapedEl) {
         escapedEl.textContent = escapedCount.toString();
       }
-      if (escapedCount >= TARGET_ESCAPED) {
+      if (escapedCount >= targetEscapedGoal) {
         endGame(true);
       }
       return;
@@ -327,13 +443,11 @@ function resizeCanvas() {
   scaleY = canvas.height / DESIGN_HEIGHT;
 }
 
-function createTowers() {
+function createTowers(towerLayout = currentDifficulty.towers) {
   towers.length = 0;
-  towers.push(new Tower(160, 380, { fireRate: 1.4, range: 200 }));
-  towers.push(new Tower(340, 260, { fireRate: 1.2, damage: 35 }));
-  towers.push(new Tower(520, 420, { fireRate: 1.5, projectileSpeed: 360 }));
-  towers.push(new Tower(640, 200, { fireRate: 0.9, damage: 48, range: 220 }));
-  towers.push(new Tower(820, 300, { fireRate: 1.1, range: 210 }));
+  for (const tower of towerLayout) {
+    towers.push(new Tower(tower.x, tower.y, tower.options ?? {}));
+  }
 }
 
 function spawnUnit(key) {
@@ -370,8 +484,8 @@ function endGame(victory) {
 function updateCommandPoints(dt) {
   if (gameOver) return;
   commandPoints = Math.min(
-    200,
-    commandPoints + POINTS_PER_SECOND * dt
+    COMMAND_POINT_CAP,
+    commandPoints + commandPointRegen * dt
   );
   if (commandPointsEl) {
     commandPointsEl.textContent = Math.floor(commandPoints).toString();
@@ -536,13 +650,13 @@ function drawOverlay() {
   ctx.font = "bold 36px 'Segoe UI', sans-serif";
   ctx.textAlign = "center";
   ctx.fillText(
-    escapedCount >= TARGET_ESCAPED ? "Victory!" : "Defeat",
+    escapedCount >= targetEscapedGoal ? "Victory!" : "Defeat",
     DESIGN_WIDTH / 2,
     DESIGN_HEIGHT / 2 - 10
   );
   ctx.font = "20px 'Segoe UI', sans-serif";
   ctx.fillText(
-    escapedCount >= TARGET_ESCAPED
+    escapedCount >= targetEscapedGoal
       ? "Your raiders breached the portal."
       : "The defense grid held strong this time.",
     DESIGN_WIDTH / 2,
@@ -560,11 +674,12 @@ function resetGame() {
     animationFrameId = null;
   }
 
+  const preset = getCurrentDifficulty();
   units.length = 0;
   projectiles.length = 0;
   towers.length = 0;
 
-  commandPoints = BASE_POINTS;
+  commandPoints = preset.commandPoints.start;
   escapedCount = 0;
   gameOver = false;
   timeElapsed = 0;
@@ -575,6 +690,7 @@ function resetGame() {
     statusEl.textContent = "";
     statusEl.classList.remove("visible");
   }
+  refreshDifficultyUi();
   if (commandPointsEl) {
     commandPointsEl.textContent = commandPoints.toString();
   }
@@ -585,7 +701,7 @@ function resetGame() {
     restartButton.hidden = true;
   }
 
-  createTowers();
+  createTowers(preset.towers);
   animationFrameId = requestAnimationFrame(gameLoop);
 }
 
@@ -615,9 +731,13 @@ if (restartButton) {
 }
 
 if (canvas && ctx) {
-  createTowers();
+  refreshDifficultyUi();
+  createTowers(currentDifficulty.towers);
   if (commandPointsEl) {
     commandPointsEl.textContent = commandPoints.toString();
+  }
+  if (escapedEl) {
+    escapedEl.textContent = escapedCount.toString();
   }
   resizeCanvas();
   if (typeof window !== "undefined") {
@@ -646,6 +766,11 @@ if (typeof module !== "undefined") {
     projectiles,
     units,
     towers,
-    TARGET_ESCAPED,
+    difficultySettings,
+    setDifficulty,
+    getCurrentDifficulty,
+    get TARGET_ESCAPED() {
+      return targetEscapedGoal;
+    },
   };
 }
