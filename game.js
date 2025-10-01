@@ -1,17 +1,29 @@
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+const canvas =
+  typeof document !== "undefined" ? document.getElementById("game") : null;
+const ctx = canvas ? canvas.getContext("2d") : null;
 
 const DESIGN_WIDTH = 900;
 const DESIGN_HEIGHT = 600;
 let scaleX = 1;
 let scaleY = 1;
 
-const commandPointsEl = document.getElementById("commandPoints");
-const escapedEl = document.getElementById("escaped");
-const statusEl = document.getElementById("status");
-const restartButton = document.getElementById("restartButton");
+const commandPointsEl =
+  typeof document !== "undefined"
+    ? document.getElementById("commandPoints")
+    : null;
+const escapedEl =
+  typeof document !== "undefined" ? document.getElementById("escaped") : null;
+const statusEl =
+  typeof document !== "undefined" ? document.getElementById("status") : null;
+const restartButton =
+  typeof document !== "undefined"
+    ? document.getElementById("restartButton")
+    : null;
 
-const unitButtons = Array.from(document.querySelectorAll("button[data-unit]"));
+const unitButtons =
+  typeof document !== "undefined"
+    ? Array.from(document.querySelectorAll("button[data-unit]"))
+    : [];
 
 const TARGET_ESCAPED = 20;
 const BASE_POINTS = 60;
@@ -80,7 +92,9 @@ class Unit {
     if (!nextPoint) {
       this.alive = false;
       escapedCount += 1;
-      escapedEl.textContent = escapedCount.toString();
+      if (escapedEl) {
+        escapedEl.textContent = escapedCount.toString();
+      }
       if (escapedCount >= TARGET_ESCAPED) {
         endGame(true);
       }
@@ -270,6 +284,7 @@ function spawnUnit(key) {
 }
 
 function flashStatus(message) {
+  if (!statusEl) return;
   statusEl.textContent = message;
   statusEl.classList.add("visible");
   setTimeout(() => statusEl.classList.remove("visible"), 800);
@@ -278,10 +293,12 @@ function flashStatus(message) {
 function endGame(victory) {
   if (gameOver) return;
   gameOver = true;
-  statusEl.textContent = victory
-    ? "Raid successful! You overwhelmed the defenses."
-    : "The towers held. Recalibrate your assault.";
-  statusEl.classList.add("visible");
+  if (statusEl) {
+    statusEl.textContent = victory
+      ? "Raid successful! You overwhelmed the defenses."
+      : "The towers held. Recalibrate your assault.";
+    statusEl.classList.add("visible");
+  }
 }
 
 function updateCommandPoints(dt) {
@@ -290,7 +307,9 @@ function updateCommandPoints(dt) {
     200,
     commandPoints + POINTS_PER_SECOND * dt
   );
-  commandPointsEl.textContent = Math.floor(commandPoints).toString();
+  if (commandPointsEl) {
+    commandPointsEl.textContent = Math.floor(commandPoints).toString();
+  }
 }
 
 function update(dt) {
@@ -335,6 +354,7 @@ function update(dt) {
 }
 
 function drawBackground() {
+  if (!ctx) return;
   ctx.save();
   ctx.fillStyle = "rgba(12, 20, 32, 0.9)";
   ctx.fillRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
@@ -373,6 +393,7 @@ function drawBackground() {
 }
 
 function drawUnits() {
+  if (!ctx) return;
   for (const unit of units) {
     if (!unit.alive) continue;
     ctx.save();
@@ -402,12 +423,14 @@ function drawUnits() {
 }
 
 function drawTowers() {
+  if (!ctx) return;
   for (const tower of towers) {
     tower.draw();
   }
 }
 
 function drawProjectiles() {
+  if (!ctx) return;
   for (const projectile of projectiles) {
     projectile.draw();
   }
@@ -421,12 +444,14 @@ function gameLoop(time) {
 
   update(dt);
   resizeCanvas();
-  ctx.setTransform(scaleX, 0, 0, scaleY, 0, 0);
-  ctx.clearRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
-  drawBackground();
-  drawTowers();
-  drawUnits();
-  drawProjectiles();
+  if (ctx) {
+    ctx.setTransform(scaleX, 0, 0, scaleY, 0, 0);
+    ctx.clearRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
+    drawBackground();
+    drawTowers();
+    drawUnits();
+    drawProjectiles();
+  }
 
   if (!gameOver) {
     animationFrameId = requestAnimationFrame(gameLoop);
@@ -437,6 +462,7 @@ function gameLoop(time) {
 }
 
 function drawOverlay() {
+  if (!ctx) return;
   ctx.save();
   ctx.fillStyle = "rgba(15, 23, 42, 0.65)";
   ctx.fillRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
@@ -457,7 +483,9 @@ function drawOverlay() {
     DESIGN_HEIGHT / 2 + 24
   );
   ctx.restore();
-  restartButton.hidden = false;
+  if (restartButton) {
+    restartButton.hidden = false;
+  }
 }
 
 function resetGame() {
@@ -477,38 +505,81 @@ function resetGame() {
   lastMotivation = -Infinity;
   lastTime = performance.now();
 
-  statusEl.textContent = "";
-  statusEl.classList.remove("visible");
-  commandPointsEl.textContent = commandPoints.toString();
-  escapedEl.textContent = escapedCount.toString();
-  restartButton.hidden = true;
+  if (statusEl) {
+    statusEl.textContent = "";
+    statusEl.classList.remove("visible");
+  }
+  if (commandPointsEl) {
+    commandPointsEl.textContent = commandPoints.toString();
+  }
+  if (escapedEl) {
+    escapedEl.textContent = escapedCount.toString();
+  }
+  if (restartButton) {
+    restartButton.hidden = true;
+  }
 
   createTowers();
   animationFrameId = requestAnimationFrame(gameLoop);
 }
 
-unitButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const type = button.dataset.unit;
-    spawnUnit(type);
+if (unitButtons.length > 0) {
+  unitButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const type = button.dataset.unit;
+      spawnUnit(type);
+    });
   });
-});
+}
 
-document.addEventListener("keydown", (event) => {
-  if (event.repeat) return;
-  if (event.key === "1") spawnUnit("scout");
-  if (event.key === "2") spawnUnit("bruiser");
-  if (event.key === "3") spawnUnit("tank");
-  if (event.key.toLowerCase() === "r" && gameOver) {
-    resetGame();
+if (typeof document !== "undefined") {
+  document.addEventListener("keydown", (event) => {
+    if (event.repeat) return;
+    if (event.key === "1") spawnUnit("scout");
+    if (event.key === "2") spawnUnit("bruiser");
+    if (event.key === "3") spawnUnit("tank");
+    if (event.key.toLowerCase() === "r" && gameOver) {
+      resetGame();
+    }
+  });
+}
+
+if (restartButton) {
+  restartButton.addEventListener("click", resetGame);
+}
+
+if (canvas && ctx) {
+  createTowers();
+  if (commandPointsEl) {
+    commandPointsEl.textContent = commandPoints.toString();
   }
-});
+  resizeCanvas();
+  if (typeof window !== "undefined") {
+    window.addEventListener("resize", resizeCanvas);
+  }
+  if (restartButton) {
+    restartButton.hidden = true;
+  }
+  animationFrameId = requestAnimationFrame(gameLoop);
+}
 
-restartButton.addEventListener("click", resetGame);
-
-createTowers();
-commandPointsEl.textContent = commandPoints.toString();
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
-restartButton.hidden = true;
-animationFrameId = requestAnimationFrame(gameLoop);
+if (typeof module !== "undefined") {
+  module.exports = {
+    Unit,
+    Tower,
+    Projectile,
+    unitTypes,
+    path,
+    spawnUnit,
+    createTowers,
+    update,
+    updateCommandPoints,
+    resetGame,
+    flashStatus,
+    endGame,
+    projectiles,
+    units,
+    towers,
+    TARGET_ESCAPED,
+  };
+}
