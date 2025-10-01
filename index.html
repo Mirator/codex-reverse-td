@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reverse Tower Defense</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hud">
+      <h1>Reverse Tower Defense</h1>
+      <p>
+        Deploy raiding parties that can break through the automated defenses. If
+        twenty units reach the escape portal, you win!
+      </p>
+    </header>
+
+    <main class="layout">
+      <section class="panel">
+        <h2>Command Console</h2>
+        <p class="resources">
+          <strong>Command Points:</strong>
+          <span id="commandPoints" aria-live="polite">0</span>
+        </p>
+        <div class="buttons">
+          <button data-unit="scout" aria-label="Deploy Scout (costs 30)">
+            Deploy Scout
+            <small>Cost: 30</small>
+          </button>
+          <button data-unit="bruiser" aria-label="Deploy Bruiser (costs 55)">
+            Deploy Bruiser
+            <small>Cost: 55</small>
+          </button>
+          <button data-unit="tank" aria-label="Deploy Tank (costs 90)">
+            Deploy Tank
+            <small>Cost: 90</small>
+          </button>
+        </div>
+        <p class="tip">Command points regenerate automatically.</p>
+        <div class="objectives">
+          <p>
+            <strong>Raiders escaped:</strong>
+            <span id="escaped" aria-live="polite">0</span> / 20
+          </p>
+          <p id="status" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+      <section class="playfield">
+        <canvas
+          id="game"
+          width="900"
+          height="600"
+          role="img"
+          aria-label="Game board showing the enemy base, path, and defensive towers"
+        ></canvas>
+      </section>
+    </main>
+
+    <footer class="hud">
+      <p>
+        Tip: Scouts are quick distractions. Bruisers soak shots. Tanks are slow
+        but almost unstoppable.
+      </p>
+    </footer>
+
+    <script src="game.js"></script>
+  </body>
+</html>
