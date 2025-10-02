@@ -15,7 +15,6 @@
   </head>
   <body>
     <header class="hud">
-      <span class="hud-badge" aria-hidden="true">Reverse TD</span>
       <h1>Vine-Trellis Lynx Cooperative</h1>
       <p>
         Guide the cooperative's scouts, wardens, and guardians through the
@@ -25,31 +24,71 @@
     </header>
 
     <main class="layout">
-      <section class="panel">
-        <h2>Canopy Dispatch</h2>
-        <div class="difficulty-control">
-          <label for="difficulty">Path Intensity</label>
-          <select id="difficulty" aria-label="Select path intensity"></select>
+      <section class="dispatch">
+        <header class="dispatch-heading">
+          <div>
+            <h2>Canopy Dispatch</h2>
+            <p class="dispatch-tagline">Quick directives for the caravan core.</p>
+          </div>
+        </header>
+        <div class="dispatch-body">
+          <div class="dispatch-controls">
+            <div class="difficulty-control">
+              <label for="difficulty">Path Intensity</label>
+              <select id="difficulty" aria-label="Select path intensity"></select>
+            </div>
+            <p
+              id="difficultyDescription"
+              class="difficulty-description"
+              aria-live="polite"
+            ></p>
+          </div>
+          <div class="dispatch-summary">
+            <article class="stat-card stat-card--points">
+              <div class="stat-card-header">
+                <span>Harvest Points</span>
+                <span class="tooltip">
+                  <button
+                    class="tooltip-button"
+                    type="button"
+                    aria-describedby="harvestTip"
+                    aria-label="Harvest points tip"
+                  >
+                    i
+                  </button>
+                  <span class="tooltip-bubble" role="tooltip" id="harvestTip">
+                    Harvest points bloom back over time.
+                  </span>
+                </span>
+              </div>
+              <span class="stat-card-value" id="commandPoints" aria-live="polite"
+                >0</span
+              >
+            </article>
+            <article class="stat-card stat-card--families">
+              <span class="stat-card-header">Lynx families sheltered</span>
+              <div class="stat-card-value stat-card-value--fraction">
+                <span id="escaped" aria-live="polite">0</span>
+                <span class="stat-card-divider" aria-hidden="true">/</span>
+                <span id="targetTotal">20</span>
+              </div>
+            </article>
+            <article class="stat-card stat-card--status">
+              <span class="stat-card-header">Dispatch status</span>
+              <p id="status" role="status" aria-live="polite"></p>
+            </article>
+          </div>
         </div>
-        <p
-          id="difficultyDescription"
-          class="difficulty-description"
-          aria-live="polite"
-        ></p>
-        <p class="resources">
-          <strong>Harvest Points:</strong>
-          <span id="commandPoints" aria-live="polite">0</span>
-        </p>
-        <div class="buttons" aria-label="Forage caravan options"></div>
-        <p class="tip">Harvest points bloom back over time.</p>
-        <div class="objectives">
-          <p>
-            <strong>Lynx families sheltered:</strong>
-            <span id="escaped" aria-live="polite">0</span>
-            /
-            <span id="targetTotal">20</span>
-          </p>
-          <p id="status" role="status" aria-live="polite"></p>
+        <div class="dispatch-buttons">
+          <div class="unit-toolbar-header">
+            <h3 class="unit-toolbar-heading">Caravan Units</h3>
+            <p class="unit-toolbar-caption">Hover or focus to study each role.</p>
+          </div>
+          <div
+            class="buttons unit-toolbar"
+            role="toolbar"
+            aria-label="Caravan unit roster"
+          ></div>
         </div>
       </section>
       <section class="playfield">
@@ -65,13 +104,6 @@
         </button>
       </section>
     </main>
-
-    <footer class="hud">
-      <p>
-        Tip: Seed Runners draw tower focus. Lynx Wardens hold the line. Grove
-        Sentinels are slow but nearly unshakeable.
-      </p>
-    </footer>
 
     <script src="game.js"></script>
   </body>

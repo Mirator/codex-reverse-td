@@ -190,50 +190,72 @@ function buildUnitButtons(container) {
   const fragment = document.createDocumentFragment();
 
   Object.entries(unitTypes).forEach(([key, unit]) => {
+    const option = document.createElement("div");
+    option.className = "unit-option";
+
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.unit = key;
-    const ariaLabel = `Deploy ${unit.name} (Cost ${unit.cost}, Speed ${unit.speed}, Health ${unit.health}, Role ${unit.role})`;
-    button.setAttribute("aria-label", ariaLabel);
-    button.title = `${unit.name}\nCost: ${unit.cost}\nSpeed: ${unit.speed}\nHealth: ${unit.health}\nRole: ${unit.role}`;
+    button.className = "unit-button";
+    button.setAttribute("aria-label", `Deploy ${unit.name}`);
+    const tooltipId = `unit-${key}-details`;
+    button.setAttribute("aria-describedby", tooltipId);
 
-    const name = document.createElement("span");
-    name.className = "unit-name";
-    name.textContent = `Deploy ${unit.name}`;
-    button.appendChild(name);
+    const icon = document.createElement("span");
+    icon.className = `unit-icon unit-icon--${key}`;
+    icon.setAttribute("aria-hidden", "true");
+    button.appendChild(icon);
 
-    const cost = document.createElement("small");
-    cost.className = "unit-cost";
-    cost.textContent = `Cost: ${unit.cost}`;
-    button.appendChild(cost);
+    const label = document.createElement("span");
+    label.className = "unit-label";
+    label.textContent = unit.name;
+    button.appendChild(label);
 
-    const stats = document.createElement("span");
-    stats.className = "unit-stats";
+    option.appendChild(button);
 
-    const speedStat = document.createElement("span");
-    speedStat.className = "stat";
-    speedStat.append("Speed ");
-    const speedValue = document.createElement("strong");
-    speedValue.textContent = unit.speed.toString();
-    speedStat.appendChild(speedValue);
-    stats.appendChild(speedStat);
+    const tooltip = document.createElement("div");
+    tooltip.className = "unit-tooltip";
+    tooltip.id = tooltipId;
+    tooltip.setAttribute("role", "tooltip");
 
-    const healthStat = document.createElement("span");
-    healthStat.className = "stat";
-    healthStat.append("Health ");
-    const healthValue = document.createElement("strong");
-    healthValue.textContent = unit.health.toString();
-    healthStat.appendChild(healthValue);
-    stats.appendChild(healthStat);
+    const tooltipTitle = document.createElement("h3");
+    tooltipTitle.className = "unit-tooltip-title";
+    tooltipTitle.textContent = unit.name;
+    tooltip.appendChild(tooltipTitle);
 
-    button.appendChild(stats);
-
-    const role = document.createElement("span");
+    const role = document.createElement("p");
     role.className = "unit-role";
-    role.textContent = `Role: ${unit.role}`;
-    button.appendChild(role);
+    role.textContent = unit.role;
+    tooltip.appendChild(role);
 
-    fragment.appendChild(button);
+    const statList = document.createElement("dl");
+    statList.className = "unit-stats";
+
+    const stats = [
+      ["Cost", unit.cost],
+      ["Speed", unit.speed],
+      ["Health", unit.health],
+    ];
+
+    stats.forEach(([labelText, value]) => {
+      const item = document.createElement("div");
+      item.className = "unit-stat";
+
+      const term = document.createElement("dt");
+      term.textContent = labelText;
+
+      const description = document.createElement("dd");
+      description.textContent = value.toString();
+
+      item.appendChild(term);
+      item.appendChild(description);
+      statList.appendChild(item);
+    });
+
+    tooltip.appendChild(statList);
+    option.appendChild(tooltip);
+
+    fragment.appendChild(option);
     buttons.push(button);
   });
 
