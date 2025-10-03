@@ -24,73 +24,6 @@
     </header>
 
     <main class="layout">
-      <section class="dispatch">
-        <header class="dispatch-heading">
-          <div>
-            <h2>Canopy Dispatch</h2>
-            <p class="dispatch-tagline">Quick directives for the caravan core.</p>
-          </div>
-        </header>
-        <div class="dispatch-body">
-          <div class="dispatch-controls">
-            <div class="difficulty-control">
-              <label for="difficulty">Path Intensity</label>
-              <select id="difficulty" aria-label="Select path intensity"></select>
-            </div>
-            <p
-              id="difficultyDescription"
-              class="difficulty-description"
-              aria-live="polite"
-            ></p>
-          </div>
-          <div class="dispatch-summary">
-            <article class="stat-card stat-card--points">
-              <div class="stat-card-header">
-                <span>Harvest Points</span>
-                <span class="tooltip">
-                  <button
-                    class="tooltip-button"
-                    type="button"
-                    aria-describedby="harvestTip"
-                    aria-label="Harvest points tip"
-                  >
-                    i
-                  </button>
-                  <span class="tooltip-bubble" role="tooltip" id="harvestTip">
-                    Harvest points bloom back over time.
-                  </span>
-                </span>
-              </div>
-              <span class="stat-card-value" id="commandPoints" aria-live="polite"
-                >0</span
-              >
-            </article>
-            <article class="stat-card stat-card--families">
-              <span class="stat-card-header">Lynx families sheltered</span>
-              <div class="stat-card-value stat-card-value--fraction">
-                <span id="escaped" aria-live="polite">0</span>
-                <span class="stat-card-divider" aria-hidden="true">/</span>
-                <span id="targetTotal">20</span>
-              </div>
-            </article>
-            <article class="stat-card stat-card--status">
-              <span class="stat-card-header">Dispatch status</span>
-              <p id="status" role="status" aria-live="polite"></p>
-            </article>
-          </div>
-        </div>
-        <div class="dispatch-buttons">
-          <div class="unit-toolbar-header">
-            <h3 class="unit-toolbar-heading">Caravan Units</h3>
-            <p class="unit-toolbar-caption">Hover or focus to study each role.</p>
-          </div>
-          <div
-            class="buttons unit-toolbar"
-            role="toolbar"
-            aria-label="Caravan unit roster"
-          ></div>
-        </div>
-      </section>
       <section class="playfield">
         <canvas
           id="game"
@@ -99,6 +32,65 @@
           role="img"
           aria-label="Garden trellis with winding paths, cooperative units, and defensive towers"
         ></canvas>
+        <aside class="dispatch" aria-label="Canopy dispatch">
+          <header class="dispatch-heading sr-only">
+            <div>
+              <h2>Canopy Dispatch</h2>
+              <p class="dispatch-tagline">Quick directives for the caravan core.</p>
+            </div>
+          </header>
+          <div class="dispatch-panels">
+            <div class="dispatch-summary">
+              <article
+                class="stat-card stat-card--points"
+                data-label="Harvest points"
+                tabindex="0"
+                aria-label="Harvest points"
+                aria-describedby="harvestTip"
+              >
+                <span class="sr-only" id="harvestTip"
+                  >Harvest points bloom back over time.</span
+                >
+                <span class="stat-card-icon stat-card-icon--points" aria-hidden="true"></span>
+                <span class="stat-card-value" id="commandPoints" aria-live="polite"
+                  >0</span
+                >
+              </article>
+              <article
+                class="stat-card stat-card--families"
+                data-label="Families sheltered"
+                tabindex="0"
+                aria-label="Lynx families sheltered"
+              >
+                <span class="stat-card-icon stat-card-icon--families" aria-hidden="true"></span>
+                <div class="stat-card-value stat-card-value--fraction">
+                  <span id="escaped" aria-live="polite">0</span>
+                  <span class="stat-card-divider" aria-hidden="true">/</span>
+                  <span id="targetTotal">20</span>
+                </div>
+              </article>
+              <article
+                class="stat-card stat-card--status"
+                data-label="Dispatch status"
+                aria-label="Dispatch status"
+              >
+                <span class="stat-card-icon stat-card-icon--status" aria-hidden="true"></span>
+                <p id="status" role="status" aria-live="polite"></p>
+              </article>
+            </div>
+            <div class="dispatch-buttons">
+              <div class="unit-toolbar-header sr-only">
+                <h3 class="unit-toolbar-heading">Caravan Units</h3>
+                <p class="unit-toolbar-caption">Hover or focus to study each role.</p>
+              </div>
+              <div
+                class="buttons unit-toolbar"
+                role="toolbar"
+                aria-label="Caravan unit roster"
+              ></div>
+            </div>
+          </div>
+        </aside>
         <button id="restartButton" class="overlay-button" type="button" hidden>
           Send Another Caravan
         </button>

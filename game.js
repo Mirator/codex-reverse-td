@@ -391,6 +391,25 @@ class Tower {
     const { x, y } = this.position;
     ctx.save();
     ctx.translate(x, y);
+    const rotation = (timeElapsed + (x + y) * 0.002) * 0.6;
+    ctx.save();
+    ctx.rotate(rotation);
+    const petalGradient = ctx.createLinearGradient(0, -32, 0, -4);
+    petalGradient.addColorStop(0, "rgba(176, 255, 220, 0.08)");
+    petalGradient.addColorStop(1, "rgba(120, 232, 180, 0.35)");
+    ctx.fillStyle = petalGradient;
+    ctx.shadowColor = "rgba(150, 255, 210, 0.3)";
+    ctx.shadowBlur = 18;
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(10, -18, 2, -34);
+      ctx.quadraticCurveTo(-10, -18, 0, 0);
+      ctx.fill();
+      ctx.rotate((Math.PI * 2) / 3);
+    }
+    ctx.restore();
+
     ctx.fillStyle = "rgba(8, 32, 18, 0.85)";
     ctx.beginPath();
     ctx.arc(0, 0, 26, 0, Math.PI * 2);
@@ -412,10 +431,13 @@ class Tower {
     ctx.stroke();
 
     const pulse = 0.65 + Math.sin((timeElapsed + x * 0.01) * 2.2) * 0.2;
-    ctx.fillStyle = `rgba(167, 255, 217, ${0.65 + pulse * 0.25})`;
+    ctx.fillStyle = `rgba(167, 255, 217, ${0.58 + pulse * 0.28})`;
     ctx.beginPath();
-    ctx.arc(0, 0, 9 + pulse * 4, 0, Math.PI * 2);
+    ctx.arc(0, 0, 11 + pulse * 4.5, 0, Math.PI * 2);
     ctx.fill();
+    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = "rgba(210, 255, 230, 0.35)";
+    ctx.stroke();
     ctx.restore();
 
     ctx.save();
